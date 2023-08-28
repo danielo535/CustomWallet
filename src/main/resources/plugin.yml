@@ -1,0 +1,11 @@
+name: CustomWallet
+version: '${project.version}'
+main: pl.danielo535.customwallet.CustomWallet
+api-version: '1.13'
+authors: [danielo535]
+description: Plugin for custom money
+depend: [PlaceholderAPI]
+
+commands:
+  wallet:
+    aliases: custom-wallet

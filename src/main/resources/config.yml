@@ -1,0 +1,30 @@
+# Configuration for the database connection
+database:
+  host: "127.0.0.1"     # Database host address
+  port: 3306            # Database port
+  database: "database"  # Database name
+  username: "username"  # Database username
+  password: "password"  # Database user's password
+
+# Messages displayed to users
+messages:
+  usage: "&7Usage: &e/wallet help"  # Usage message
+  reload: "&aPlugin has reloaded"  # Plugin reload message
+  add: "&eAdded %number% &ato %player%'s account. &7Current balance: &e%saldo% &7out of &e%saldo-last%"  # Money added message
+  set: "&aSet %player%'s account balance to &e%saldo%. &7Previous balance: &e%saldo-last%"  # Balance set message
+  pay: "&eTransferred %number% &ato %player%. &7Your current balance: &e%saldo%"  # Money transferred message
+  pay-user: "&e%player% &7Transferred you at &a%number%. &7Your currently balance: &e%saldo%"  # Money transferred user message
+  check: "&7Account balance of &e%player%&7: &e%saldo%"  # Balance check message
+  remove: "&eRemoved %number% &afrom %player%'s account. &7Current balance: &e%saldo% &7out of &e%saldo-last%"  # Money removed message
+
+# Error messages
+messages-error:
+  no-permissions: "&cYou don't have the permission %permission%"  # No permissions error message
+  number: "&cPlease provide an amount"  # Amount not provided error message
+  usage-number: "&cInvalid number."  # Invalid number error message
+  money: "&cAmount cannot be less than 0"  # Negative amount error message
+  user: "&cProvide the name of an online player."  # Player name not provided error message
+  user-database: "&cPlayer doesn't exist in the database."  # Player not found in database error message
+  pay-money: "&cYou cannot transfer money to yourself"  # Self-transfer error message
+  pay-value: "&cInsufficient funds"  # Insufficient funds error message
+  remove-money: "&c%player% doesn't have that much money. You can remove up to %saldo%"  # Insufficient funds for removal error message
