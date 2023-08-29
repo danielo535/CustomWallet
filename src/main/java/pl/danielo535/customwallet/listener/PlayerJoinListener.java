@@ -28,6 +28,7 @@ public class PlayerJoinListener implements Listener {
     }
     /**
      * Event handler for player join events. Checks if the player exists in the database and adds them if not.
+     * Also checks for plugin updates and informs operators about available updates.
      *
      * @param event The player join event.
      * @throws SQLException If an SQL-related error occurs.
@@ -43,8 +44,8 @@ public class PlayerJoinListener implements Listener {
         if (ConfigStorage.SETTINGS_UPDATE$INFO && player.isOp()) {
             new CheckUpdate(plugin, 112339).getVersion(version -> {
                 if (!(plugin.getDescription().getVersion().equals(version))) {
-                    player.sendMessage(ColorTranslator.translateColorCodes("&b[&6CustomWallet&b] &bThere is a new update available."));
-                    TextComponent message = new TextComponent(ColorTranslator.translateColorCodes("&b[&6CustomWallet&b] Your version &c" + plugin.getDescription().getVersion() + "&b new version &c" + version));
+                    player.sendMessage(ColorTranslator.translateColorCodes("&7[&6CustomWallet&7] &aThere is a new update available."));
+                    TextComponent message = new TextComponent(ColorTranslator.translateColorCodes("&7[&6CustomWallet&7] Your version &c" + plugin.getDescription().getVersion() + "&7 new version &c" + version));
                     message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "https://www.spigotmc.org/resources/112339"));
                     message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Copy download link").create()));
                     player.sendMessage(message);
