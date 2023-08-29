@@ -1,7 +1,6 @@
 package pl.danielo535.customwallet.command.subcommand;
 
 import me.kodysimpson.simpapi.colors.ColorTranslator;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import pl.danielo535.customwallet.config.ConfigStorage;
 import pl.danielo535.customwallet.manager.WalletManager;
@@ -15,7 +14,7 @@ public class SetSubCommand {
     public SetSubCommand(WalletManager walletManager) {
         this.walletManager = walletManager;
     }
-    public void executeSet(CommandSender sender, Player player , String[] args) {
+    public void executeSet(Player sender, Player player , String[] args) {
         if (sender.hasPermission(PERMISSION_SET) || sender.hasPermission(PERMISSION_ALL)) {
             if (args.length > 2) {
                 double number = Double.parseDouble(args[2]);

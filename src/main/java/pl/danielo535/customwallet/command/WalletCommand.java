@@ -77,7 +77,7 @@ public class WalletCommand implements CommandExecutor {
                         }
                     } else if (subCommand.equals("set")) {
                         if (args.length > 2) {
-                            setSubCommand.executeSet(sender, player, args);
+                            setSubCommand.executeSet((Player) sender, player, args);
                         } else {
                             sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_USAGE));
                         }
