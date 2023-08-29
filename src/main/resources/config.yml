@@ -23,7 +23,7 @@ messages:
 
 # Error messages
 messages-error:
-  no-permissions: "&cYou don't have the permission %permission%"  # No permissions error message
+  no-permission: "&cYou don't have the permission %permission%"  # No permissions error message
   number: "&cPlease provide an amount"  # Amount not provided error message
   usage-number: "&cInvalid number."  # Invalid number error message
   money: "&cAmount cannot be less than 0"  # Negative amount error message
