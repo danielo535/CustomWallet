@@ -50,14 +50,18 @@ public class WalletPlaceholder extends PlaceholderExpansion {
     public String onPlaceholderRequest(final Player p, @NotNull final String identifier) {
         String noData = "No data";
         if (mysqlManager.connection != null) {
-            String walletMoney = roundingWalletMoney(walletManager.checkWalletMoney(p));
-
-            if (identifier.equals("value")) {
-                return walletMoney != null ? walletMoney : noData;
+            double walletMoney;
+            if (walletManager.walletCache.containsKey(p.getName())) {
+                walletMoney = walletManager.walletCache.get(p.getName());
+            } else {
+                walletMoney = walletManager.checkWalletMoney(p);
+                walletManager.walletCache.put(p.getName(), walletMoney);
             }
-
+            if (identifier.equals("value")) {
+                return roundingWalletMoney(walletMoney);
+            }
             if (identifier.equals("value-formatted")) {
-                return walletMoney != null ? formatWalletMoney(walletMoney) : noData;
+                return formatWalletMoney(walletMoney);
             }
         } else {
             return noData;
