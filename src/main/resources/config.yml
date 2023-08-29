@@ -1,3 +1,7 @@
+# Enable or disable update information
+settings:
+  update-info: true
+
 # Configuration for the database connection
 database:
   host: "127.0.0.1"     # Database host address

@@ -25,6 +25,9 @@ public class ConfigStorage {
     //$ = -
     // _ = . (nowy wiersz)
 
+    //CONFIGS SETTINGS
+    public static Boolean SETTINGS_UPDATE$INFO;
+
     //CONFIGS DATABASE
     public static String DATABASE_HOST;
     public static Integer DATABASE_PORT;
@@ -51,7 +54,6 @@ public class ConfigStorage {
     public static String MESSAGES_USAGE;
     public static String MESSAGES$ERROR_NO$PERMISSION;
 
-
     public static void createDefaultFiles(Plugin plugin) {
         File dataFolder = plugin.getDataFolder();
         if (!dataFolder.exists() && !dataFolder.mkdir()) {
@@ -61,8 +63,8 @@ public class ConfigStorage {
             if (!cfgFile.exists()) {
                 try {
                     Files.copy(plugin.getClass().getClassLoader().getResourceAsStream(fileName), Paths.get(cfgFile.toURI()), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException var3) {
-                    throw new RuntimeException("Wystąpił błąd podczas tworzenia configu!", var3);
+                } catch (IOException e) {
+                    throw new RuntimeException("Wystąpił błąd podczas tworzenia configu!", e);
                 }
             }
 
@@ -82,8 +84,8 @@ public class ConfigStorage {
                 }
             }
 
-        } catch (Exception var5) {
-            throw new RuntimeException("Wystąpił problem podczas ładowania configu!", var5);
+        } catch (Exception e) {
+            throw new RuntimeException("Wystąpił problem podczas ładowania configu!", e);
         }
     }
 
@@ -96,10 +98,9 @@ public class ConfigStorage {
                     cfg.set(path, field.get(null));
                 }
             }
-
             cfg.save(cfgFile);
-        } catch (Exception var5) {
-            throw new RuntimeException("Wystąpił problem podczas zapisywania configu!", var5);
+        } catch (Exception e) {
+            throw new RuntimeException("Wystąpił problem podczas zapisywania configu!", e);
         }
     }
 
