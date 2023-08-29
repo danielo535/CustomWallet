@@ -4,7 +4,7 @@ main: pl.danielo535.customwallet.CustomWallet
 api-version: '1.13'
 authors: [danielo535]
 description: Plugin for custom money
-depend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI]
 
 commands:
   wallet:
