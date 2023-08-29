@@ -41,7 +41,7 @@ public class RemoveSubCommand {
             }
         } else {
             sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_NO$PERMISSION)
-                    .replace("%permission%", String.valueOf("CustomWallet.remove"))
+                    .replace("%permission%", PERMISSION_REMOVE)
             );
         }
     }

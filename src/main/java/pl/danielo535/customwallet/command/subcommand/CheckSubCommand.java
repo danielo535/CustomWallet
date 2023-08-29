@@ -24,7 +24,7 @@ public class CheckSubCommand {
             );
         } else {
             sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_NO$PERMISSION)
-                    .replace("%permission%", String.valueOf("CustomWallet.check"))
+                    .replace("%permission%", PERMISSION_CHECK)
             );
         }
     }

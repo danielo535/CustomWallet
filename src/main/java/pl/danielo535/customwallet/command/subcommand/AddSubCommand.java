@@ -37,7 +37,7 @@ public class AddSubCommand {
             }
         } else {
             sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_NO$PERMISSION)
-                    .replace("%permission%", String.valueOf("CustomWallet.add"))
+                    .replace("%permission%", PERMISSION_ADD)
             );
         }
     }
