@@ -10,6 +10,7 @@ import pl.danielo535.customwallet.listener.PlayerJoinListener;
 import pl.danielo535.customwallet.manager.MysqlManager;
 import pl.danielo535.customwallet.manager.WalletManager;
 import pl.danielo535.customwallet.placeholder.WalletPlaceholder;
+import pl.danielo535.customwallet.update.CheckUpdate;
 
 import java.sql.SQLException;
 
@@ -60,9 +61,21 @@ public final class CustomWallet extends JavaPlugin {
             getLogger().info("✔ CustomWallet enabled...");
             getLogger().info(" ");
             getLogger().info("---------------------------------");
+            updateCheck();
         } catch (SQLException e) {
             handleSQLException(e);
         }
+    }
+    private void updateCheck() {
+        if (!ConfigStorage.SETTINGS_UPDATE$INFO) return;
+        new CheckUpdate(this, 112339).getVersion(version -> {
+            if (this.getDescription().getVersion().equals(version)) {
+                this.getLogger().info("There is not a new update available.");
+            } else {
+                this.getLogger().info("There is a new update available.");
+                this.getLogger().info("Your version " + this.getDescription().getVersion() + " new version " + version);
+            }
+        });
     }
 
     @Override
@@ -70,6 +83,9 @@ public final class CustomWallet extends JavaPlugin {
         if (mysqlManager.connection != null) {
             mysqlManager.disconnect();
             getLogger().info("Database connection closed.");
+        }
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new WalletPlaceholder(walletManager,mysqlManager).unregister();
         }
     }
 }
