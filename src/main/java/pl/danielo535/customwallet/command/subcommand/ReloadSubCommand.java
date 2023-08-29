@@ -42,7 +42,7 @@ public class ReloadSubCommand {
             }
         } else {
             sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_NO$PERMISSION)
-                    .replace("%permission%", PERMISSION_RELOAD)
+                    .replace("%permission%", String.valueOf(PERMISSION_RELOAD))
             );
         }
     }

@@ -41,7 +41,7 @@ public class RemoveSubCommand {
             }
         } else {
             sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_NO$PERMISSION)
-                    .replace("%permission%", PERMISSION_REMOVE)
+                    .replace("%permission%", String.valueOf(PERMISSION_REMOVE))
             );
         }
     }

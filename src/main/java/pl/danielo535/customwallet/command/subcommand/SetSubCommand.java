@@ -36,7 +36,7 @@ public class SetSubCommand {
             }
         } else {
             sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_NO$PERMISSION)
-                    .replace("%permission%", PERMISSION_SET)
+                    .replace("%permission%", String.valueOf(PERMISSION_SET))
             );
         }
     }
