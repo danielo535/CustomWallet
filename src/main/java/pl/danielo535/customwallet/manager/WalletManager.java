@@ -7,11 +7,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import static pl.danielo535.customwallet.manager.MysqlManager.handleSQLException;
 
 public class WalletManager {
     private final MysqlManager mysqlManager;
+    public final Map<String, Double> walletCache = new HashMap<>();
     public WalletManager(MysqlManager mysqlManager) {
         this.mysqlManager = mysqlManager;
     }
@@ -80,16 +83,17 @@ public class WalletManager {
      * @return True if the wallet was successfully updated, false otherwise.
      */
     public boolean addWalletMoney(Player player, Double number) {
+        double currentBalance = walletCache.getOrDefault(player.getName(), checkWalletMoney(player));
+
+        // Updating cached balances
+        walletCache.put(player.getName(), currentBalance + number);
+
         String sql = "UPDATE wallet SET money = ? WHERE player = ?";
         try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
-            if (checkWalletMoney(player) == 0) {
-                statement.setDouble(1, number);
-            } else {
-                statement.setDouble(1, checkWalletMoney(player) + number);
-            }
+            statement.setDouble(1, currentBalance + number);
             statement.setString(2, player.getName());
-            int rowsAffected = statement.executeUpdate();
-            return rowsAffected > 0;
+            statement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             handleSQLException(e);
             return false;
@@ -123,16 +127,19 @@ public class WalletManager {
      * @return True if the wallet was successfully updated, false otherwise.
      */
     public boolean removeWalletMoney(CommandSender sender, Player player, Double number) {
+        double currentBalance = walletCache.getOrDefault(player.getName(), checkWalletMoney(player));
+        if (currentBalance < number) {
+            return false;
+        }
+        // Updating cached balances
+        walletCache.put(player.getName(), currentBalance - number);
+
         String sql = "UPDATE wallet SET money = ? WHERE player = ?";
         try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
-            if (checkWalletMoney(player) == 0) {
-                return false;
-            } else {
-                statement.setDouble(1, checkWalletMoney(player) - number);
-            }
+            statement.setDouble(1, currentBalance - number);
             statement.setString(2, player.getName());
-            int rowsAffected = statement.executeUpdate();
-            return rowsAffected > 0;
+            statement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             handleSQLException(e);
             return false;
@@ -147,18 +154,27 @@ public class WalletManager {
      * @return True if the payment was successful, false otherwise.
      */
     public boolean payWalletMoney(CommandSender sender, Player player, Double number) {
+        double payerBalance = walletCache.getOrDefault(sender.getName(), checkWalletMoney((Player) sender));
+        if (payerBalance < number) {
+            return false;
+        }
+        double receiverBalance = walletCache.getOrDefault(player.getName(), checkWalletMoney(player));
+
+        // Updating cached balances
+        walletCache.put(sender.getName(), payerBalance - number);
+        walletCache.put(player.getName(), receiverBalance + number);
+
         String sql = "UPDATE wallet SET money = ? WHERE player = ?";
         try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
-            if (checkWalletMoney((Player) sender) == 0) {
-                return false;
-            } else {
-                statement.setDouble(1, checkWalletMoney((Player) sender) - number);
-            }
+            statement.setDouble(1, payerBalance - number);
             statement.setString(2, sender.getName());
-            int rowsAffected = statement.executeUpdate();
-            addWalletMoney(player, number);
-            return rowsAffected > 0;
+            statement.executeUpdate();
 
+            statement.setDouble(1, receiverBalance + number);
+            statement.setString(2, player.getName());
+            statement.executeUpdate();
+
+            return true;
         } catch (SQLException e) {
             handleSQLException(e);
             return false;
@@ -171,8 +187,8 @@ public class WalletManager {
      * @param walletMoney The wallet money value to be formatted.
      * @return The formatted wallet money value.
      */
-    public static String formatWalletMoney(String walletMoney) {
-        double moneyValue = Double.parseDouble(walletMoney);
+    public static String formatWalletMoney(Double walletMoney) {
+        double moneyValue = walletMoney;
 
         if (moneyValue < 1000 && moneyValue % 1 < 0.01) {
             return roundingWalletMoney(moneyValue);
