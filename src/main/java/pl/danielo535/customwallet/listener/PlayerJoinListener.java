@@ -1,18 +1,28 @@
 package pl.danielo535.customwallet.listener;
 
+import me.kodysimpson.simpapi.colors.ColorTranslator;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import pl.danielo535.customwallet.CustomWallet;
+import pl.danielo535.customwallet.config.ConfigStorage;
 import pl.danielo535.customwallet.manager.MysqlManager;
 import pl.danielo535.customwallet.manager.WalletManager;
+import pl.danielo535.customwallet.update.CheckUpdate;
 
 import java.sql.SQLException;
 
 public class PlayerJoinListener implements Listener {
+    private final CustomWallet plugin;
     private final MysqlManager mysqlManager;
     private final WalletManager walletManager;
-    public PlayerJoinListener(MysqlManager mysqlManager, WalletManager walletManager) {
+    public PlayerJoinListener(CustomWallet plugin ,MysqlManager mysqlManager, WalletManager walletManager) {
+        this.plugin = plugin;
         this.mysqlManager = mysqlManager;
         this.walletManager = walletManager;
     }
@@ -24,11 +34,22 @@ public class PlayerJoinListener implements Listener {
      */
     @EventHandler
     public void onJoinServer(PlayerJoinEvent event) throws SQLException {
+        Player player = event.getPlayer();
         if (mysqlManager.connection != null || !mysqlManager.connection.isClosed()) {
-            Player player = event.getPlayer();
             if (!walletManager.checkPlayerDatabase(player)) {
                 walletManager.addPlayerDatabase(player, 0);
             }
+        }
+        if (ConfigStorage.SETTINGS_UPDATE$INFO && player.isOp()) {
+            new CheckUpdate(plugin, 112339).getVersion(version -> {
+                if (!(plugin.getDescription().getVersion().equals(version))) {
+                    player.sendMessage(ColorTranslator.translateColorCodes("&b[&6CustomWallet&b] &bThere is a new update available."));
+                    TextComponent message = new TextComponent(ColorTranslator.translateColorCodes("&b[&6CustomWallet&b] Your version &c" + plugin.getDescription().getVersion() + "&b new version &c" + version));
+                    message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "https://www.spigotmc.org/resources/112339"));
+                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Copy download link").create()));
+                    player.sendMessage(message);
+                }
+            });
         }
     }
 }
