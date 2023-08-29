@@ -44,7 +44,7 @@ public final class CustomWallet extends JavaPlugin {
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new WalletPlaceholder(walletManager,mysqlManager).register();
         }
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(mysqlManager,walletManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this,mysqlManager,walletManager), this);
         getCommand("wallet").setExecutor(new WalletCommand(walletManager,addSubCommand,checkSubCommand,helpSubCommand,paySubCommand,reloadSubCommand,removeSubCommand,setSubCommand));
         getCommand("wallet").setTabCompleter(new TabCompleteCommand());
 
