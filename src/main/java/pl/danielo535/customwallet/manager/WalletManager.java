@@ -112,6 +112,10 @@ public class WalletManager {
             statement.setDouble(1, number);
             statement.setString(2, player.getName());
             int rowsAffected = statement.executeUpdate();
+
+            // Updating cached balances
+            walletCache.put(player.getName(), number);
+
             return rowsAffected > 0;
         } catch (SQLException e) {
             handleSQLException(e);
