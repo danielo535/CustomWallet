@@ -3,7 +3,7 @@
   ![CustomWallet Logo](https://imgur.com/ZzNyzrY.png)
 
   # CustomWallet Plugin
-  **Dependencies**: [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+  **Softdepend**: [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
 
   ![Plugin Version](https://img.shields.io/badge/Version-1.0-blue.svg)
   ![Minecraft Version](https://img.shields.io/badge/Minecraft-1.18.2-green.svg)
