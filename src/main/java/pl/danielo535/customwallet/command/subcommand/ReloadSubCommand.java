@@ -3,36 +3,43 @@ package pl.danielo535.customwallet.command.subcommand;
 import me.kodysimpson.simpapi.colors.ColorTranslator;
 import org.bukkit.command.CommandSender;
 import pl.danielo535.customwallet.config.ConfigStorage;
-import pl.danielo535.customwallet.manager.MysqlManager;
+import pl.danielo535.customwallet.manager.DatabaseManager;
+import pl.danielo535.customwallet.task.UpdateMoneyTask;
 
 import java.sql.SQLException;
 
 import static pl.danielo535.customwallet.command.WalletCommand.PERMISSION_ALL;
 import static pl.danielo535.customwallet.command.WalletCommand.PERMISSION_RELOAD;
-import static pl.danielo535.customwallet.manager.MysqlManager.handleSQLException;
+import static pl.danielo535.customwallet.manager.DatabaseManager.handleSQLException;
 
 public class ReloadSubCommand {
-    private static MysqlManager mysqlManager;
-    public ReloadSubCommand(MysqlManager mysqlManager) {
-        this.mysqlManager = mysqlManager;
+    private static DatabaseManager databaseManager;
+    private static UpdateMoneyTask updateMoneyTask;
+    public ReloadSubCommand(DatabaseManager databaseManager, UpdateMoneyTask updateMoneyTask) {
+        this.databaseManager = databaseManager;
+        this.updateMoneyTask = updateMoneyTask;
     }
     public void executeReload(CommandSender sender) {
         if (sender.hasPermission(PERMISSION_RELOAD) || sender.hasPermission(PERMISSION_ALL)) {
             ConfigStorage.reload();
-            if (mysqlManager.connection != null) {
-                mysqlManager.disconnect();
+            if (databaseManager.connection != null) {
+                databaseManager.disconnect();
             }
-            mysqlManager.connect();
+            if (updateMoneyTask.task != null) {
+                updateMoneyTask.task.cancel();
+            }
+            updateMoneyTask.startTask();
+            databaseManager.connect();
             try {
-                if (mysqlManager.connection != null && !mysqlManager.connection.isClosed()) {
-                    mysqlManager.createTables(mysqlManager.connection);
+                if (databaseManager.connection != null && !databaseManager.connection.isClosed()) {
+                    databaseManager.createTables(databaseManager.connection);
                 }
             } catch (SQLException e) {
                 handleSQLException(e);
             }
             sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_RELOAD));
             try {
-                if (mysqlManager.connection == null || mysqlManager.connection.isClosed()) {
+                if (databaseManager.connection == null || databaseManager.connection.isClosed()) {
                     sender.sendMessage(ColorTranslator.translateColorCodes("&c✘ Database connection failed!"));
                 } else {
                     sender.sendMessage(ColorTranslator.translateColorCodes("&a✔ Connected to the database!"));
