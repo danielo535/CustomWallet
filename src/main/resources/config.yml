@@ -1,6 +1,13 @@
-# Enable or disable update information
+# Configuration for CustomWallet plugin settings
 settings:
+  # Enable or disable automatic information of update plugin
   update-info: true
+  # Choose the database type for storing player information.
+  # You can choose between Mysql and SQlite.
+  database-type: SQlite
+  # Define how frequently the player placeholder value (money) should be updated, in seconds.
+  # For example, setting this to 60 will update the player money value every 60 seconds (1 minute).
+  update-value: 60
 
 # Configuration for the database connection
 database:
