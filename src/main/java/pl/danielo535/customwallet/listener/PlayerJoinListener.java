@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import pl.danielo535.customwallet.CustomWallet;
 import pl.danielo535.customwallet.config.ConfigStorage;
-import pl.danielo535.customwallet.manager.MysqlManager;
+import pl.danielo535.customwallet.manager.DatabaseManager;
 import pl.danielo535.customwallet.manager.WalletManager;
 import pl.danielo535.customwallet.update.CheckUpdate;
 
@@ -19,11 +19,11 @@ import java.sql.SQLException;
 
 public class PlayerJoinListener implements Listener {
     private final CustomWallet plugin;
-    private final MysqlManager mysqlManager;
+    private final DatabaseManager databaseManager;
     private final WalletManager walletManager;
-    public PlayerJoinListener(CustomWallet plugin ,MysqlManager mysqlManager, WalletManager walletManager) {
+    public PlayerJoinListener(CustomWallet plugin , DatabaseManager databaseManager, WalletManager walletManager) {
         this.plugin = plugin;
-        this.mysqlManager = mysqlManager;
+        this.databaseManager = databaseManager;
         this.walletManager = walletManager;
     }
     /**
@@ -36,9 +36,11 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onJoinServer(PlayerJoinEvent event) throws SQLException {
         Player player = event.getPlayer();
-        if (mysqlManager.connection != null || !mysqlManager.connection.isClosed()) {
+        if (databaseManager.connection != null || !databaseManager.connection.isClosed()) {
             if (!walletManager.checkPlayerDatabase(player)) {
                 walletManager.addPlayerDatabase(player, 0);
+            } else {
+                walletManager.walletCache.put(player.getName(), walletManager.checkWalletMoney(player));
             }
         }
         if (ConfigStorage.SETTINGS_UPDATE$INFO && player.isOp()) {

@@ -12,7 +12,7 @@ import pl.danielo535.customwallet.manager.WalletManager;
 
 import java.sql.SQLException;
 
-import static pl.danielo535.customwallet.manager.MysqlManager.handleSQLException;
+import static pl.danielo535.customwallet.manager.DatabaseManager.handleSQLException;
 
 public class WalletCommand implements CommandExecutor {
     private final WalletManager walletManager;
