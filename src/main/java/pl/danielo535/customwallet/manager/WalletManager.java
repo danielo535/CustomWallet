@@ -24,7 +24,7 @@ public class WalletManager {
      * @param player The player to be added to the database.
      * @param integer The initial amount of money to allocate to the player.
      */
-    public void addPlayerDatabase(Player player, Integer integer, Connection connection) {
+    public void addPlayerDatabase(Player player, Integer integer) {
         String sql = "INSERT INTO wallet (player, money) VALUES (?, ?)";
         try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setString(1, player.getName());
@@ -41,7 +41,7 @@ public class WalletManager {
      * @return True if the player is present in the database, false otherwise.
      * @throws SQLException If a database error occurs during the operation.
      */
-    public boolean checkPlayerDatabase(Player player, Connection connection) throws SQLException {
+    public boolean checkPlayerDatabase(Player player) throws SQLException {
         String sql = "SELECT * FROM wallet WHERE player = ?";
         try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setString(1, player.getName());
@@ -59,7 +59,7 @@ public class WalletManager {
      * @param player The player whose wallet balance is being checked.
      * @return The amount of money in the player's wallet.
      */
-    public double checkWalletMoney(Player player, Connection connection) {
+    public double checkWalletMoney(Player player) {
         String sql = "SELECT money FROM wallet WHERE player = ?";
         try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setString(1, player.getName());
@@ -81,7 +81,7 @@ public class WalletManager {
      * @param number The amount of money to add.
      * @return True if the wallet was successfully updated, false otherwise.
      */
-    public boolean addWalletMoney(Player player, Double number, Connection connection) {
+    public boolean addWalletMoney(Player player, Double number) {
         double currentBalance = walletCache.getOrDefault(player.getName(), checkWalletMoney(player));
 
         // Updating cached balances
@@ -105,7 +105,7 @@ public class WalletManager {
      * @param number The new amount of money.
      * @return True if the wallet was successfully updated, false otherwise.
      */
-    public boolean setWalletMoney(Player player, Double number, Connection connection) {
+    public boolean setWalletMoney(Player player, Double number) {
         String sql = "UPDATE wallet SET money = ? WHERE player = ?";
         try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setDouble(1, number);
@@ -129,7 +129,7 @@ public class WalletManager {
      * @param number The amount of money to remove.
      * @return True if the wallet was successfully updated, false otherwise.
      */
-    public boolean removeWalletMoney(CommandSender sender, Player player, Double number, Connection connection) {
+    public boolean removeWalletMoney(CommandSender sender, Player player, Double number) {
         double currentBalance = walletCache.getOrDefault(player.getName(), checkWalletMoney(player));
         if (currentBalance < number) {
             return false;
@@ -156,7 +156,7 @@ public class WalletManager {
      * @param number The amount of money to be paid.
      * @return True if the payment was successful, false otherwise.
      */
-    public boolean payWalletMoney(CommandSender sender, Player player, Double number, Connection connection) {
+    public boolean payWalletMoney(CommandSender sender, Player player, Double number) {
         double payerBalance = walletCache.getOrDefault(sender.getName(), checkWalletMoney((Player) sender));
         if (payerBalance < number) {
             return false;
