@@ -4,7 +4,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.danielo535.customwallet.manager.MysqlManager;
+import pl.danielo535.customwallet.manager.DatabaseManager;
 import pl.danielo535.customwallet.manager.WalletManager;
 
 import static pl.danielo535.customwallet.manager.WalletManager.formatWalletMoney;
@@ -12,10 +12,10 @@ import static pl.danielo535.customwallet.manager.WalletManager.roundingWalletMon
 
 public class WalletPlaceholder extends PlaceholderExpansion {
     private final WalletManager walletManager;
-    private final MysqlManager mysqlManager;
-    public WalletPlaceholder(WalletManager walletManager, MysqlManager mysqlManager) {
+    private final DatabaseManager databaseManager;
+    public WalletPlaceholder(WalletManager walletManager, DatabaseManager databaseManager) {
         this.walletManager = walletManager;
-        this.mysqlManager = mysqlManager;
+        this.databaseManager = databaseManager;
     }
 
     @NotNull
@@ -49,7 +49,7 @@ public class WalletPlaceholder extends PlaceholderExpansion {
     @Nullable
     public String onPlaceholderRequest(final Player p, @NotNull final String identifier) {
         String noData = "No data";
-        if (mysqlManager.connection != null) {
+        if (databaseManager.connection != null) {
             double walletMoney;
             if (walletManager.walletCache.containsKey(p.getName())) {
                 walletMoney = walletManager.walletCache.get(p.getName());

@@ -10,24 +10,23 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pl.danielo535.customwallet.manager.MysqlManager.handleSQLException;
+import static pl.danielo535.customwallet.manager.DatabaseManager.handleSQLException;
 
 public class WalletManager {
-    private final MysqlManager mysqlManager;
+    private final DatabaseManager databaseManager;
     public final Map<String, Double> walletCache = new HashMap<>();
-    public WalletManager(MysqlManager mysqlManager) {
-        this.mysqlManager = mysqlManager;
+    public WalletManager(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
     }
     /**
      * Adds a player to the database with a specified amount of money.
      *
      * @param player The player to be added to the database.
      * @param integer The initial amount of money to allocate to the player.
-     * @throws SQLException If a database error occurs during the operation.
      */
-    public void addPlayerDatabase(Player player, Integer integer) throws SQLException {
+    public void addPlayerDatabase(Player player, Integer integer) {
         String sql = "INSERT INTO wallet (player, money) VALUES (?, ?)";
-        try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setString(1, player.getName());
             statement.setInt(2, integer);
             statement.executeUpdate();
@@ -44,7 +43,7 @@ public class WalletManager {
      */
     public boolean checkPlayerDatabase(Player player) throws SQLException {
         String sql = "SELECT * FROM wallet WHERE player = ?";
-        try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setString(1, player.getName());
             try (ResultSet resultSet = statement.executeQuery()) {
                 return resultSet.next();
@@ -62,7 +61,7 @@ public class WalletManager {
      */
     public double checkWalletMoney(Player player) {
         String sql = "SELECT money FROM wallet WHERE player = ?";
-        try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setString(1, player.getName());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -89,7 +88,7 @@ public class WalletManager {
         walletCache.put(player.getName(), currentBalance + number);
 
         String sql = "UPDATE wallet SET money = ? WHERE player = ?";
-        try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setDouble(1, currentBalance + number);
             statement.setString(2, player.getName());
             statement.executeUpdate();
@@ -108,7 +107,7 @@ public class WalletManager {
      */
     public boolean setWalletMoney(Player player, Double number) {
         String sql = "UPDATE wallet SET money = ? WHERE player = ?";
-        try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setDouble(1, number);
             statement.setString(2, player.getName());
             int rowsAffected = statement.executeUpdate();
@@ -139,7 +138,7 @@ public class WalletManager {
         walletCache.put(player.getName(), currentBalance - number);
 
         String sql = "UPDATE wallet SET money = ? WHERE player = ?";
-        try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setDouble(1, currentBalance - number);
             statement.setString(2, player.getName());
             statement.executeUpdate();
@@ -169,7 +168,7 @@ public class WalletManager {
         walletCache.put(player.getName(), receiverBalance + number);
 
         String sql = "UPDATE wallet SET money = ? WHERE player = ?";
-        try (PreparedStatement statement = mysqlManager.connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
             statement.setDouble(1, payerBalance - number);
             statement.setString(2, sender.getName());
             statement.executeUpdate();
