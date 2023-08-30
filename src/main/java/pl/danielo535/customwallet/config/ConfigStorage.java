@@ -27,6 +27,8 @@ public class ConfigStorage {
 
     //CONFIGS SETTINGS
     public static Boolean SETTINGS_UPDATE$INFO;
+    public static String SETTINGS_DATABASE$TYPE;
+    public static Integer SETTINGS_UPDATE$VALUE;
 
     //CONFIGS DATABASE
     public static String DATABASE_HOST;
