@@ -65,10 +65,6 @@ CustomWallet supports precise value amounts, including decimal values such as 2.
 
 - **Comprehensive Command System**: CustomWallet offers an extensive set of commands, allowing you to comprehensively manage player wallets and configure the plugin directly in the game.
 
-## Author
-
-Written by [danielo535](https://github.com/danielo535).
-
 ## Links
 * [SpigotMC](https://www.spigotmc.org/resources/cw-customwallet-advanced-economic-system.112339/)
 * [bStats](https://bstats.org/plugin/bukkit/CustomWallet/19669)
