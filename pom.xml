@@ -90,10 +90,5 @@
             <artifactId>SimpAPI</artifactId>
             <version>4.4.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.danielo535</groupId>
-            <artifactId>CustomWallet-API</artifactId>
-            <version>main-d196b98611-1</version>
-        </dependency>
     </dependencies>
 </project>
