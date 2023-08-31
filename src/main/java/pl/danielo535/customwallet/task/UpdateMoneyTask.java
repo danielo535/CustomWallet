@@ -11,7 +11,7 @@ public class UpdateMoneyTask {
     public BukkitRunnable task;
     private final WalletManager walletManager;
     private final CustomWallet plugin;
-    public UpdateMoneyTask(WalletManager walletManager,CustomWallet plugin) {
+    public UpdateMoneyTask(WalletManager walletManager, CustomWallet plugin) {
         this.walletManager = walletManager;
         this.plugin = plugin;
     }

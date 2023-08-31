@@ -11,9 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import pl.danielo535.customwallet.CustomWallet;
 import pl.danielo535.customwallet.config.ConfigStorage;
+import pl.danielo535.customwallet.update.CheckUpdate;
 import pl.danielo535.customwallet.manager.DatabaseManager;
 import pl.danielo535.customwallet.manager.WalletManager;
-import pl.danielo535.customwallet.update.CheckUpdate;
 
 import java.sql.SQLException;
 

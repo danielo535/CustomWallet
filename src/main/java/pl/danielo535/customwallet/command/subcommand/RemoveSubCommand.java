@@ -21,7 +21,7 @@ public class RemoveSubCommand {
                 double number = Double.parseDouble(args[2]);
                 double saldoLast = walletManager.checkWalletMoney(player);
                 if (saldoLast - number >= 0) {
-                    walletManager.removeWalletMoney(sender, player, number);
+                    walletManager.removeWalletMoney(player, number);
                     double saldo = walletManager.checkWalletMoney(player);
                     sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_REMOVE)
                             .replace("%number%", roundingWalletMoney(number))

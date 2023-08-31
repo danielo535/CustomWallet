@@ -2,22 +2,26 @@ package pl.danielo535.customwallet.command.subcommand;
 
 import me.kodysimpson.simpapi.colors.ColorTranslator;
 import org.bukkit.command.CommandSender;
+import pl.danielo535.customwallet.CustomWallet;
 import pl.danielo535.customwallet.config.ConfigStorage;
-import pl.danielo535.customwallet.manager.DatabaseManager;
 import pl.danielo535.customwallet.task.UpdateMoneyTask;
+import pl.danielo535.customwallet.manager.DatabaseManager;
 
 import java.sql.SQLException;
 
+import static pl.danielo535.customwallet.CustomWallet.*;
 import static pl.danielo535.customwallet.command.WalletCommand.PERMISSION_ALL;
 import static pl.danielo535.customwallet.command.WalletCommand.PERMISSION_RELOAD;
 import static pl.danielo535.customwallet.manager.DatabaseManager.handleSQLException;
 
 public class ReloadSubCommand {
-    private static DatabaseManager databaseManager;
-    private static UpdateMoneyTask updateMoneyTask;
-    public ReloadSubCommand(DatabaseManager databaseManager, UpdateMoneyTask updateMoneyTask) {
+    private final DatabaseManager databaseManager;
+    private final UpdateMoneyTask updateMoneyTask;
+    private final CustomWallet customWallet;
+    public ReloadSubCommand(DatabaseManager databaseManager, UpdateMoneyTask updateMoneyTask, CustomWallet customWallet) {
         this.databaseManager = databaseManager;
         this.updateMoneyTask = updateMoneyTask;
+        this.customWallet = customWallet;
     }
     public void executeReload(CommandSender sender) {
         if (sender.hasPermission(PERMISSION_RELOAD) || sender.hasPermission(PERMISSION_ALL)) {
@@ -29,10 +33,11 @@ public class ReloadSubCommand {
                 updateMoneyTask.task.cancel();
             }
             updateMoneyTask.startTask();
-            databaseManager.connect();
+            customWallet.setDatabaseConnection();
+            databaseManager.connect(type,host,port,database,username,password);
             try {
                 if (databaseManager.connection != null && !databaseManager.connection.isClosed()) {
-                    databaseManager.createTables(databaseManager.connection);
+                    databaseManager.createTables();
                 }
             } catch (SQLException e) {
                 handleSQLException(e);

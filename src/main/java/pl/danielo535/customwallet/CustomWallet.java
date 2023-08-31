@@ -18,6 +18,13 @@ import java.sql.SQLException;
 import static pl.danielo535.customwallet.manager.DatabaseManager.handleSQLException;
 
 public final class CustomWallet extends JavaPlugin {
+    public static CustomWallet getInstance() {
+        return instance;
+    }
+
+    private static CustomWallet instance;
+    public static String host, database, username, password, type;
+    public static int port;
     private DatabaseManager databaseManager;
     private WalletManager walletManager;
     private AddSubCommand addSubCommand;
@@ -28,6 +35,7 @@ public final class CustomWallet extends JavaPlugin {
     private RemoveSubCommand removeSubCommand;
     private SetSubCommand setSubCommand;
     private UpdateMoneyTask updateMoneyTask;
+
     @Override
     public void onEnable() {
         new Metrics(this,19669);
@@ -40,7 +48,7 @@ public final class CustomWallet extends JavaPlugin {
         checkSubCommand = new CheckSubCommand(walletManager);
         helpSubCommand = new HelpSubCommand();
         paySubCommand = new PaySubCommand(walletManager);
-        reloadSubCommand = new ReloadSubCommand(databaseManager,updateMoneyTask);
+        reloadSubCommand = new ReloadSubCommand(databaseManager,updateMoneyTask,this);
         removeSubCommand = new RemoveSubCommand(walletManager);
         setSubCommand = new SetSubCommand(walletManager);
 
@@ -55,9 +63,10 @@ public final class CustomWallet extends JavaPlugin {
         ConfigStorage.load();
 
         try {
-            databaseManager.connect();
+            setDatabaseConnection();
+            databaseManager.connect(type,host,port,database,username,password);
             if (databaseManager.connection != null) {
-                databaseManager.createTables(databaseManager.connection);
+                databaseManager.createTables();
             }
             getLogger().info("---------------------------------");
             getLogger().info(" ");
@@ -69,6 +78,21 @@ public final class CustomWallet extends JavaPlugin {
             handleSQLException(e);
         }
     }
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
+    public WalletManager getWalletManager() {
+        return walletManager;
+    }
+    public void setDatabaseConnection() {
+        host = ConfigStorage.DATABASE_HOST;
+        port = ConfigStorage.DATABASE_PORT;
+        database = ConfigStorage.DATABASE_DATABASE;
+        username = ConfigStorage.DATABASE_USERNAME;
+        password = ConfigStorage.DATABASE_PASSWORD;
+        type = ConfigStorage.SETTINGS_DATABASE$TYPE;
+    }
+
     private void updateCheck() {
         if (!ConfigStorage.SETTINGS_UPDATE$INFO) return;
         new CheckUpdate(this, 112339).getVersion(version -> {
