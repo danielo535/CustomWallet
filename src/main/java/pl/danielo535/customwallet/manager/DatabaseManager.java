@@ -1,6 +1,7 @@
 package pl.danielo535.customwallet.manager;
 
 import org.bukkit.plugin.Plugin;
+import pl.danielo535.customwallet.CustomWallet;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,8 +17,8 @@ public class DatabaseManager {
     public Connection connection;
     private String mysql, sqlite;
 
-    private final Plugin plugin;
-    public DatabaseManager(Plugin plugin) {
+    private final CustomWallet plugin;
+    public DatabaseManager(CustomWallet plugin) {
         this.plugin = plugin;
     }
     /**

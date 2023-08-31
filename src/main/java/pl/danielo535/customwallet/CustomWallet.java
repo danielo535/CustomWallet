@@ -79,10 +79,10 @@ public final class CustomWallet extends JavaPlugin {
         }
     }
     public DatabaseManager getDatabaseManager() {
-        return databaseManager;
+        return this.databaseManager;
     }
     public WalletManager getWalletManager() {
-        return walletManager;
+        return this.walletManager;
     }
     public void setDatabaseConnection() {
         host = ConfigStorage.DATABASE_HOST;
