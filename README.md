@@ -5,10 +5,7 @@
   # CustomWallet Plugin
   **Softdepend**: [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
 
-  ![Plugin Version](https://img.shields.io/badge/Version-1.0-blue.svg)
-  ![Minecraft Version](https://img.shields.io/badge/Minecraft-1.18.2-green.svg)
-  ![Spigot Version](https://img.shields.io/badge/Spigot-1.18.2-orange.svg)
-    [![](https://jitpack.io/v/danielo535/CustomWallet.svg)](https://jitpack.io/#danielo535/CustomWallet)
+  [![](https://jitpack.io/v/danielo535/CustomWallet.svg)](https://jitpack.io/#danielo535/CustomWallet)
   ![](https://img.shields.io/github/v/release/danielo535/customwallet.svg)
   ![](https://img.shields.io/github/last-commit/danielo535/customwallet.svg)
 
