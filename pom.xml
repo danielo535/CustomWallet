@@ -6,14 +6,14 @@
 
     <groupId>pl.danielo535</groupId>
     <artifactId>CustomWallet</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
     <packaging>jar</packaging>
 
     <name>CustomWallet</name>
 
     <description>Plugin for custom money</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

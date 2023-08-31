@@ -1,6 +1,5 @@
 package pl.danielo535.customwallet.manager;
 
-import org.bukkit.plugin.Plugin;
 import pl.danielo535.customwallet.CustomWallet;
 
 import java.sql.Connection;
@@ -24,7 +23,7 @@ public class DatabaseManager {
     /**
      * Establishes a connection to the MySQL database using configuration parameters.
      */
-    public synchronized void connect(String type,String host,Integer port, String database,String username,String password) {
+    public void connect(String type,String host,Integer port, String database,String username,String password) {
         try {
             if (type.equalsIgnoreCase("Mysql")) {
                 mysql = "jdbc:mysql://" + host + ":" + port + "/" + database;
@@ -40,7 +39,7 @@ public class DatabaseManager {
     /**
      * Closes the connection to the MySQL database.
      */
-    public synchronized void disconnect() {
+    public void disconnect() {
         try {
             if (connection != null) {
                 connection.close();

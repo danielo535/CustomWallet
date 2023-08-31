@@ -37,11 +37,12 @@ public final class CustomWallet extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        instance = this;
+
         new Metrics(this,19669);
 
         databaseManager = new DatabaseManager(this);
         walletManager = new WalletManager(databaseManager);
-        instance = this;
 
         updateMoneyTask = new UpdateMoneyTask(walletManager,this);
 
