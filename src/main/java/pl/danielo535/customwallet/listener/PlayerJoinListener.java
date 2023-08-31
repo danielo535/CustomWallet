@@ -50,7 +50,7 @@ public class PlayerJoinListener implements Listener {
                     TextComponent message = new TextComponent(ColorTranslator.translateColorCodes("&7[&6CustomWallet&7] Your version &c" + plugin.getDescription().getVersion() + "&7 new version &c" + version));
                     message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "https://www.spigotmc.org/resources/112339"));
                     message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Copy download link").create()));
-                    player.sendMessage(message);
+                    player.sendMessage(String.valueOf(message));
                 }
             });
         }
