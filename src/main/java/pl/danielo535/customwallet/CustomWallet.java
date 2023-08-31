@@ -38,10 +38,12 @@ public final class CustomWallet extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        instance = this;
         new Metrics(this,19669);
 
         databaseManager = new DatabaseManager(this);
         walletManager = new WalletManager(databaseManager);
+
         updateMoneyTask = new UpdateMoneyTask(walletManager,this);
 
         addSubCommand = new AddSubCommand(walletManager);
@@ -79,10 +81,10 @@ public final class CustomWallet extends JavaPlugin {
         }
     }
     public DatabaseManager getDatabaseManager() {
-        return this.databaseManager;
+        return databaseManager;
     }
     public WalletManager getWalletManager() {
-        return this.walletManager;
+        return walletManager;
     }
     public void setDatabaseConnection() {
         host = ConfigStorage.DATABASE_HOST;
