@@ -3,6 +3,7 @@
   ![CustomWallet Logo](https://imgur.com/ZzNyzrY.png)
 
   # CustomWallet Plugin
+  **Api Usage**: [Api CustomWallet](https://github.com/danielo535/CustomWallet/wiki/Api)
   **Softdepend**: [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
 
   [![](https://jitpack.io/v/danielo535/CustomWallet.svg)](https://jitpack.io/#danielo535/CustomWallet)
