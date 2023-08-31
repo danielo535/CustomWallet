@@ -18,11 +18,10 @@ import java.sql.SQLException;
 import static pl.danielo535.customwallet.manager.DatabaseManager.handleSQLException;
 
 public final class CustomWallet extends JavaPlugin {
+    private static CustomWallet instance;
     public static CustomWallet getInstance() {
         return instance;
     }
-
-    private static CustomWallet instance;
     public static String host, database, username, password, type;
     public static int port;
     private DatabaseManager databaseManager;
