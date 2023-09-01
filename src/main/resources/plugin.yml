@@ -1,5 +1,5 @@
 name: CustomWallet
-version: '1.3'
+version: '1.4'
 main: pl.danielo535.customwallet.CustomWallet
 api-version: '1.13'
 authors: [danielo535]
