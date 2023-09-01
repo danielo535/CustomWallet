@@ -70,11 +70,13 @@ public final class CustomWallet extends JavaPlugin {
             if (databaseManager.connection != null) {
                 databaseManager.createTables();
             }
-            getLogger().info("---------------------------------");
-            getLogger().info(" ");
-            getLogger().info("✔ CustomWallet enabled...");
-            getLogger().info(" ");
-            getLogger().info("---------------------------------");
+            getLogger().info("╭─────────────────────────────────────╮");
+            getLogger().info("│ CustomWallet Plugin Started         │");
+            getLogger().info("│ Version: " + getDescription().getVersion() + "                        │");
+            getLogger().info("│ Developer: danielo535               │");
+            getLogger().info("│                                     │");
+            getLogger().info("│ Thank you for using CustomWallet    │");
+            getLogger().info("╰─────────────────────────────────────╯");
             updateCheck();
         } catch (SQLException e) {
             handleSQLException(e);

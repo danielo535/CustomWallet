@@ -54,6 +54,19 @@ public class WalletManager {
         }
     }
     /**
+     * Checks if the database connection is open.
+     *
+     * @return True if the database connection is open, false otherwise.
+     * @throws SQLException If a database error occurs during the operation.
+     */
+    public boolean checkConnectionDatabase() throws SQLException {
+        if (databaseManager.connection == null || databaseManager.connection.isClosed()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Checks the amount of money in a player's wallet.
      *
      * @param player The player whose wallet balance is being checked.
