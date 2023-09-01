@@ -9,7 +9,8 @@
 
   [![](https://jitpack.io/v/danielo535/CustomWallet.svg)](https://jitpack.io/#danielo535/CustomWallet)
   ![](https://img.shields.io/github/v/release/danielo535/customwallet.svg)
-  ![](https://img.shields.io/github/last-commit/danielo535/customwallet.svg)
+  ![](https://img.shields.io/github/last-commit/danielo535/customwallet.svg)<br />
+![bStats Servers](https://img.shields.io/bstats/servers/19669)
 
   <a href="/#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/compact/supported/spigot_46h.png" height="35"></a>
   <a href="/#"><img src="https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/compact/supported/paper_46h.png" height="35"></a>
