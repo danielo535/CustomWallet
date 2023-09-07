@@ -18,7 +18,7 @@ public class RemoveSubCommand {
     public void executeRemove(CommandSender sender, Player player, String[] args) {
         if (sender.hasPermission(PERMISSION_REMOVE) || sender.hasPermission(PERMISSION_ALL)) {
             if (args.length > 2) {
-                double number = Double.parseDouble(args[2]);
+                double number = Double.parseDouble(args[2].replace(",", "."));
                 double saldoLast = walletManager.checkWalletMoney(player);
                 if (saldoLast - number >= 0) {
                     walletManager.removeWalletMoney(player, number);

@@ -17,7 +17,7 @@ public class SetSubCommand {
     public void executeSet(Player sender, Player player , String[] args) {
         if (sender.hasPermission(PERMISSION_SET) || sender.hasPermission(PERMISSION_ALL)) {
             if (args.length > 2) {
-                double number = Double.parseDouble(args[2]);
+                double number = Double.parseDouble(args[2].replace(",", "."));
                 if (number >= 0) {
                     double saldoLast = walletManager.checkWalletMoney(player);
                     walletManager.setWalletMoney(player, number);

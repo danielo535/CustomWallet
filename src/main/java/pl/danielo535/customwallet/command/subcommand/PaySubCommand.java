@@ -16,7 +16,7 @@ public class PaySubCommand {
     public void executePay(CommandSender sender, Player player, String[] args) {
         if (args.length > 2) {
             if (sender.getName() != player.getName()) {
-                double number = Double.parseDouble(args[2]);
+                double number = Double.parseDouble(args[2].replace(",", "."));
                 double saldo = walletManager.checkWalletMoney((Player) sender);
                 if (number > 0) {
                     if (saldo >= number) {
