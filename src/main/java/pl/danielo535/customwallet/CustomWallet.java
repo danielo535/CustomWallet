@@ -13,17 +13,14 @@ import pl.danielo535.customwallet.placeholder.WalletPlaceholder;
 import pl.danielo535.customwallet.task.UpdateMoneyTask;
 import pl.danielo535.customwallet.update.CheckUpdate;
 
-import java.sql.SQLException;
-
-import static pl.danielo535.customwallet.manager.DatabaseManager.handleSQLException;
-
 public final class CustomWallet extends JavaPlugin {
     private static CustomWallet instance;
+
     public static CustomWallet getInstance() {
         return instance;
     }
-    public static String host, database, username, password, type;
-    public static int port;
+
+    public static String database;
     private DatabaseManager databaseManager;
     private WalletManager walletManager;
     private AddSubCommand addSubCommand;
@@ -39,63 +36,51 @@ public final class CustomWallet extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        new Metrics(this,19669);
+        new Metrics(this, 19669);
 
         databaseManager = new DatabaseManager(this);
         walletManager = new WalletManager(databaseManager);
 
-        updateMoneyTask = new UpdateMoneyTask(walletManager,this);
+        updateMoneyTask = new UpdateMoneyTask(walletManager, this);
 
         addSubCommand = new AddSubCommand(walletManager);
         checkSubCommand = new CheckSubCommand(walletManager);
         helpSubCommand = new HelpSubCommand();
         paySubCommand = new PaySubCommand(walletManager);
-        reloadSubCommand = new ReloadSubCommand(databaseManager,updateMoneyTask,this);
+        reloadSubCommand = new ReloadSubCommand(databaseManager, updateMoneyTask, this);
         removeSubCommand = new RemoveSubCommand(walletManager);
         setSubCommand = new SetSubCommand(walletManager);
 
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new WalletPlaceholder(walletManager, databaseManager).register();
         }
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this, databaseManager,walletManager), this);
-        getCommand("wallet").setExecutor(new WalletCommand(walletManager,addSubCommand,checkSubCommand,helpSubCommand,paySubCommand,reloadSubCommand,removeSubCommand,setSubCommand));
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this, databaseManager, walletManager), this);
+        getCommand("wallet").setExecutor(new WalletCommand(walletManager, addSubCommand, checkSubCommand, helpSubCommand, paySubCommand, reloadSubCommand, removeSubCommand, setSubCommand));
         getCommand("wallet").setTabCompleter(new TabCompleteCommand());
 
         ConfigStorage.createDefaultFiles(this);
         ConfigStorage.load();
 
-        try {
-            setDatabaseConnection();
-            databaseManager.connect(type,host,port,database,username,password);
-            if (databaseManager.connection != null) {
-                databaseManager.createTables();
-            }
-            getLogger().info("╭─────────────────────────────────────╮");
-            getLogger().info("│ CustomWallet Plugin Started         │");
-            getLogger().info("│ Version: " + getDescription().getVersion() + "                        │");
-            getLogger().info("│ Developer: danielo535               │");
-            getLogger().info("│                                     │");
-            getLogger().info("│ Thank you for using CustomWallet    │");
-            getLogger().info("╰─────────────────────────────────────╯");
-            updateCheck();
-        } catch (SQLException e) {
-            handleSQLException(e);
-        }
+        databaseManager.connect(ConfigStorage.SETTINGS_DATABASE$TYPE);
+        getLogger().info("╭─────────────────────────────────────╮");
+        getLogger().info("│ CustomWallet Plugin Started         │");
+        getLogger().info("│ Version: " + getDescription().getVersion() + "                        │");
+        getLogger().info("│ Developer: danielo535               │");
+        getLogger().info("│                                     │");
+        getLogger().info("│ Thank you for using CustomWallet    │");
+        getLogger().info("╰─────────────────────────────────────╯");
+        updateCheck();
+
     }
+
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
     }
+
     public WalletManager getWalletManager() {
         return walletManager;
     }
-    public void setDatabaseConnection() {
-        host = ConfigStorage.DATABASE_HOST;
-        port = ConfigStorage.DATABASE_PORT;
-        database = ConfigStorage.DATABASE_DATABASE;
-        username = ConfigStorage.DATABASE_USERNAME;
-        password = ConfigStorage.DATABASE_PASSWORD;
-        type = ConfigStorage.SETTINGS_DATABASE$TYPE;
-    }
+
 
     private void updateCheck() {
         if (!ConfigStorage.SETTINGS_UPDATE$INFO) return;
@@ -111,11 +96,8 @@ public final class CustomWallet extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (databaseManager.connection != null) {
-            databaseManager.disconnect();
-            getLogger().info("Database connection closed.");
-        }
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        databaseManager.disconnect();
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new WalletPlaceholder(walletManager, databaseManager).unregister();
         }
     }

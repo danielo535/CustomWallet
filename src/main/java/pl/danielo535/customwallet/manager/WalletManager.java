@@ -3,6 +3,7 @@ package pl.danielo535.customwallet.manager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,25 +16,29 @@ import static pl.danielo535.customwallet.manager.DatabaseManager.handleSQLExcept
 public class WalletManager {
     private final DatabaseManager databaseManager;
     public final Map<String, Double> walletCache = new HashMap<>();
+
     public WalletManager(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
+
     /**
      * Adds a player to the database with a specified amount of money.
      *
-     * @param player The player to be added to the database.
+     * @param player  The player to be added to the database.
      * @param integer The initial amount of money to allocate to the player.
      */
-    public void addPlayerDatabase(Player player, Integer integer) {
-        String sql = "INSERT INTO wallet (player, money) VALUES (?, ?)";
-        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
-            statement.setString(1, player.getName());
-            statement.setInt(2, integer);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            handleSQLException(e);
+    public void addPlayerDatabase(Player player, Integer integer) throws SQLException {
+        try (final Connection connection = databaseManager.dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO wallet (player, money) VALUES (?, ?)")) {
+                statement.setString(1, player.getName());
+                statement.setInt(2, integer);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                handleSQLException(e);
+            }
         }
     }
+
     /**
      * Checks if a player is present in the database.
      *
@@ -41,29 +46,20 @@ public class WalletManager {
      * @return True if the player is present in the database, false otherwise.
      * @throws SQLException If a database error occurs during the operation.
      */
-    public boolean checkPlayerDatabase(Player player) throws SQLException {
-        String sql = "SELECT * FROM wallet WHERE player = ?";
-        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
-            statement.setString(1, player.getName());
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next();
+    public boolean checkPlayerDatabase(Player player) {
+        try (final Connection connection = databaseManager.dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM wallet WHERE player = ?")) {
+                statement.setString(1, player.getName());
+                ResultSet resultSet = statement.executeQuery();
+                boolean status = resultSet.next();
+                statement.close();
+                resultSet.close();
+                return status;
             }
         } catch (SQLException e) {
             handleSQLException(e);
             return false;
         }
-    }
-    /**
-     * Checks if the database connection is open.
-     *
-     * @return True if the database connection is open, false otherwise.
-     * @throws SQLException If a database error occurs during the operation.
-     */
-    public boolean checkConnectionDatabase() throws SQLException {
-        if (databaseManager.connection == null || databaseManager.connection.isClosed()) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -73,13 +69,17 @@ public class WalletManager {
      * @return The amount of money in the player's wallet.
      */
     public double checkWalletMoney(Player player) {
-        String sql = "SELECT money FROM wallet WHERE player = ?";
-        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
-            statement.setString(1, player.getName());
-            try (ResultSet resultSet = statement.executeQuery()) {
+        try (final Connection connection = databaseManager.dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT money FROM wallet WHERE player = ?")) {
+                statement.setString(1, player.getName());
+                double status = 0.0;
+                ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    return resultSet.getDouble("money");
+                    status = resultSet.getDouble("money");
                 }
+                statement.close();
+                resultSet.close();
+                return status;
             }
         } catch (SQLException e) {
             handleSQLException(e);
@@ -96,21 +96,25 @@ public class WalletManager {
      */
     public boolean addWalletMoney(Player player, Double number) {
         double currentBalance = walletCache.getOrDefault(player.getName(), checkWalletMoney(player));
-
-        // Updating cached balances
         walletCache.put(player.getName(), currentBalance + number);
-
-        String sql = "UPDATE wallet SET money = ? WHERE player = ?";
-        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
-            statement.setDouble(1, currentBalance + number);
-            statement.setString(2, player.getName());
-            statement.executeUpdate();
-            return true;
+        try (final Connection connection = databaseManager.dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE wallet SET money = ? WHERE player = ?")) {
+                if (checkWalletMoney(player) == 0) {
+                    statement.setDouble(1, number);
+                } else {
+                    statement.setDouble(1, checkWalletMoney(player) + number);
+                }
+                statement.setString(2, player.getName());
+                int rowsAffected = statement.executeUpdate();
+                statement.close();
+                return rowsAffected > 0;
+            }
         } catch (SQLException e) {
             handleSQLException(e);
             return false;
         }
     }
+
     /**
      * Sets the amount of money in a player's wallet.
      *
@@ -119,21 +123,21 @@ public class WalletManager {
      * @return True if the wallet was successfully updated, false otherwise.
      */
     public boolean setWalletMoney(Player player, Double number) {
-        String sql = "UPDATE wallet SET money = ? WHERE player = ?";
-        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
-            statement.setDouble(1, number);
-            statement.setString(2, player.getName());
-            int rowsAffected = statement.executeUpdate();
-
-            // Updating cached balances
-            walletCache.put(player.getName(), number);
-
-            return rowsAffected > 0;
+        try (final Connection connection = databaseManager.dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE wallet SET money = ? WHERE player = ?")) {
+                statement.setDouble(1, number);
+                statement.setString(2, player.getName());
+                int rowsAffected = statement.executeUpdate();
+                walletCache.put(player.getName(), number);
+                statement.close();
+                return rowsAffected > 0;
+            }
         } catch (SQLException e) {
             handleSQLException(e);
             return false;
         }
     }
+
     /**
      * Removes an amount of money from a player's wallet.
      *
@@ -146,20 +150,25 @@ public class WalletManager {
         if (currentBalance < number) {
             return false;
         }
-        // Updating cached balances
         walletCache.put(player.getName(), currentBalance - number);
-
-        String sql = "UPDATE wallet SET money = ? WHERE player = ?";
-        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
-            statement.setDouble(1, currentBalance - number);
-            statement.setString(2, player.getName());
-            statement.executeUpdate();
-            return true;
+        try (final Connection connection = databaseManager.dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE wallet SET money = ? WHERE player = ?")) {
+                if (checkWalletMoney(player) == 0) {
+                    return false;
+                } else {
+                    statement.setDouble(1, checkWalletMoney(player) - number);
+                }
+                statement.setString(2, player.getName());
+                int rowsAffected = statement.executeUpdate();
+                statement.close();
+                return rowsAffected > 0;
+            }
         } catch (SQLException e) {
             handleSQLException(e);
             return false;
         }
     }
+
     /**
      * Pays a specific amount of money from one player's wallet to another.
      *
@@ -179,22 +188,23 @@ public class WalletManager {
         walletCache.put(sender.getName(), payerBalance - number);
         walletCache.put(player.getName(), receiverBalance + number);
 
-        String sql = "UPDATE wallet SET money = ? WHERE player = ?";
-        try (PreparedStatement statement = databaseManager.connection.prepareStatement(sql)) {
-            statement.setDouble(1, payerBalance - number);
-            statement.setString(2, sender.getName());
-            statement.executeUpdate();
-
-            statement.setDouble(1, receiverBalance + number);
-            statement.setString(2, player.getName());
-            statement.executeUpdate();
-
-            return true;
+        try (final Connection connection = databaseManager.dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE wallet SET money = ? WHERE player = ?")) {
+                statement.setDouble(1, payerBalance - number);
+                statement.setString(2, sender.getName());
+                statement.executeUpdate();
+                statement.setDouble(1, receiverBalance + number);
+                statement.setString(2, player.getName());
+                statement.executeUpdate();
+                statement.close();
+                return true;
+            }
         } catch (SQLException e) {
             handleSQLException(e);
             return false;
         }
     }
+
     /**
      * Formats the wallet money value based on the given amount.
      * Values are formatted as K for thousands, M for millions, and B for billions.
@@ -219,6 +229,7 @@ public class WalletManager {
             return formatFormattedValue(formattedValue, "B");
         }
     }
+
     /**
      * Formats the given value and adds the specified unit to it.
      *
@@ -230,6 +241,7 @@ public class WalletManager {
         String formattedValue = roundingWalletMoney(value);
         return formattedValue + unit;
     }
+
     /**
      * Rounds the wallet money value to two decimal places and removes trailing ".00".
      *

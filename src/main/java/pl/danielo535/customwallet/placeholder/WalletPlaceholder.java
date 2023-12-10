@@ -13,6 +13,7 @@ import static pl.danielo535.customwallet.manager.WalletManager.roundingWalletMon
 public class WalletPlaceholder extends PlaceholderExpansion {
     private final WalletManager walletManager;
     private final DatabaseManager databaseManager;
+
     public WalletPlaceholder(WalletManager walletManager, DatabaseManager databaseManager) {
         this.walletManager = walletManager;
         this.databaseManager = databaseManager;
@@ -48,23 +49,18 @@ public class WalletPlaceholder extends PlaceholderExpansion {
 
     @Nullable
     public String onPlaceholderRequest(final Player p, @NotNull final String identifier) {
-        String noData = "No data";
-        if (databaseManager.connection != null) {
-            double walletMoney;
-            if (walletManager.walletCache.containsKey(p.getName())) {
-                walletMoney = walletManager.walletCache.get(p.getName());
-            } else {
-                walletMoney = walletManager.checkWalletMoney(p);
-                walletManager.walletCache.put(p.getName(), walletMoney);
-            }
-            if (identifier.equals("value")) {
-                return roundingWalletMoney(walletMoney);
-            }
-            if (identifier.equals("value-formatted")) {
-                return formatWalletMoney(walletMoney);
-            }
+        double walletMoney;
+        if (walletManager.walletCache.containsKey(p.getName())) {
+            walletMoney = walletManager.walletCache.get(p.getName());
         } else {
-            return noData;
+            walletMoney = walletManager.checkWalletMoney(p);
+            walletManager.walletCache.put(p.getName(), walletMoney);
+        }
+        if (identifier.equals("value")) {
+            return roundingWalletMoney(walletMoney);
+        }
+        if (identifier.equals("value-formatted")) {
+            return formatWalletMoney(walletMoney);
         }
         return null;
     }

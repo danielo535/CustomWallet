@@ -1,7 +1,7 @@
 package pl.danielo535.customwallet.command.subcommand;
 
-import me.kodysimpson.simpapi.colors.ColorTranslator;
 import org.bukkit.command.CommandSender;
+import pl.danielo535.customwallet.utils.TextUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,8 +39,6 @@ public class HelpSubCommand {
             "&7==========================="
     );
     public void executeHelp(CommandSender sender) {
-        for (String message : help_messages) {
-            sender.sendMessage(ColorTranslator.translateColorCodes(message));
-        }
+        help_messages.forEach(message -> sender.sendMessage(TextUtils.format(message)));
     }
 }

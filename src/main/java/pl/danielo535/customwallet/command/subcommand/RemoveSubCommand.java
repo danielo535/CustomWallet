@@ -1,10 +1,10 @@
 package pl.danielo535.customwallet.command.subcommand;
 
-import me.kodysimpson.simpapi.colors.ColorTranslator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import pl.danielo535.customwallet.config.ConfigStorage;
 import pl.danielo535.customwallet.manager.WalletManager;
+import pl.danielo535.customwallet.utils.TextUtils;
 
 import static pl.danielo535.customwallet.command.WalletCommand.PERMISSION_ALL;
 import static pl.danielo535.customwallet.command.WalletCommand.PERMISSION_REMOVE;
@@ -23,25 +23,25 @@ public class RemoveSubCommand {
                 if (saldoLast - number >= 0) {
                     walletManager.removeWalletMoney(player, number);
                     double saldo = walletManager.checkWalletMoney(player);
-                    sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_REMOVE)
+                    sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES_REMOVE)
                             .replace("%number%", roundingWalletMoney(number))
                             .replace("%player%", player.getName())
                             .replace("%saldo%", roundingWalletMoney(saldo))
                             .replace("%saldo-last%", roundingWalletMoney(saldoLast))
                     );
                 } else {
-                    sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_REMOVE$MONEY)
+                    sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES$ERROR_REMOVE$MONEY)
                             .replace("%player%", player.getName())
                             .replace("%saldo%", roundingWalletMoney(saldoLast))
                     );
                 }
             } else {
-                sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_NUMBER));
+                sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES$ERROR_NUMBER));
 
             }
         } else {
-            sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_NO$PERMISSION)
-                    .replace("%permission%", String.valueOf(PERMISSION_REMOVE))
+            sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES$ERROR_NO$PERMISSION)
+                    .replace("%permission%", PERMISSION_REMOVE)
             );
         }
     }

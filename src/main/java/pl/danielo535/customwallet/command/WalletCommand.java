@@ -1,6 +1,5 @@
 package pl.danielo535.customwallet.command;
 
-import me.kodysimpson.simpapi.colors.ColorTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,10 +8,7 @@ import org.bukkit.entity.Player;
 import pl.danielo535.customwallet.command.subcommand.*;
 import pl.danielo535.customwallet.config.ConfigStorage;
 import pl.danielo535.customwallet.manager.WalletManager;
-
-import java.sql.SQLException;
-
-import static pl.danielo535.customwallet.manager.DatabaseManager.handleSQLException;
+import pl.danielo535.customwallet.utils.TextUtils;
 
 public class WalletCommand implements CommandExecutor {
     private final WalletManager walletManager;
@@ -46,7 +42,7 @@ public class WalletCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_USAGE));
+            sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES_USAGE));
             return true;
         }
         String subCommand = args[0].toLowerCase();
@@ -60,10 +56,10 @@ public class WalletCommand implements CommandExecutor {
             try {
                 Player player = Bukkit.getPlayer(args[1]);
                 if (player == null) {
-                    sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_USER));
+                    sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES$ERROR_USER));
                     return true;
                 } else if (!walletManager.checkPlayerDatabase(player)) {
-                    sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_USER$DATABASE));
+                    sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES$ERROR_USER$DATABASE));
                     return true;
                 }
                 if (walletManager.checkPlayerDatabase(player)) {
@@ -73,37 +69,35 @@ public class WalletCommand implements CommandExecutor {
                         if (args.length > 2) {
                             addSubCommand.executeAdd(sender, player, args);
                         } else {
-                            sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_USAGE));
+                            sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES_USAGE));
                         }
                     } else if (subCommand.equals("set")) {
                         if (args.length > 2) {
                             setSubCommand.executeSet((Player) sender, player, args);
                         } else {
-                            sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_USAGE));
+                            sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES_USAGE));
                         }
                     } else if (subCommand.equals("remove")) {
                         if (args.length > 2) {
                             removeSubCommand.executeRemove(sender, player, args);
                         } else {
-                            sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_USAGE));
+                            sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES_USAGE));
                         }
                     } else if (subCommand.equals("pay")) {
                         if (args.length > 2) {
                             paySubCommand.executePay(sender, player, args);
                         } else {
-                            sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_USAGE));
+                            sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES_USAGE));
                         }
                     }
                 } else {
-                    sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_USER$DATABASE));
+                    sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES$ERROR_USER$DATABASE));
                 }
             } catch (NumberFormatException e) {
-                sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES$ERROR_USAGE$NUMBER));
-            } catch (SQLException e) {
-                handleSQLException(e);
+                sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES$ERROR_USAGE$NUMBER));
             }
         } else {
-            sender.sendMessage(ColorTranslator.translateColorCodes(ConfigStorage.MESSAGES_USAGE));
+            sender.sendMessage(TextUtils.format(ConfigStorage.MESSAGES_USAGE));
         }
         return true;
     }
